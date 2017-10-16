@@ -4,7 +4,7 @@ A wireless switch based on NodeMCU ESP8266 12E WiFi Development Board with a sim
 ---
 
 ## How it works?
-### 1. Server
+### 1. Server side
 The server runs a local Apache system and MySql on 192.168.173.1 port 80 contains all the files inside the [server](https://github.com/dion-ricky/wireless-switch/tree/master/server) folder.
 The files are:
 1. [__servip.php__:](https://github.com/dion-ricky/wireless-switch/blob/master/server/servip.php) It can save the IP of the device because we will need it later to turn on/off the LED. This php file works by saving the given value from the device HTTP Request. The device request is a GET request, for example -> __GET 192.168.173.1/servip.php?locip=192.168.173.20 HTTP/1.1__ so the servip.php will save the value of __locip__ to database server in which i'm using MySql.
@@ -17,3 +17,6 @@ The files are:
 8. [__logout.php__:](https://github.com/dion-ricky/wireless-switch/blob/master/server/logout.php) This is also called session destroyer, whis file when icluded will destroy the session started by `index.php`.
 9. [__404.php__:](https://github.com/dion-ricky/wireless-switch/blob/master/server/404.php) This file will be included if `?page` contains unknown request.
 10. [__script\connection_handler.bat__:](https://github.com/dion-ricky/wireless-switch/blob/master/server/script/connection_handler.bat) This file will send 1 packet to the IP of the device and will return `errorlevel` according to the ping response. If 1 packet is received back, it will return `errorlevel` equal to 1, if no packet is received, then the `errorlevel` is set to 0.
+
+### 2. NodeMCU ESP12e WiFi Development Board
+1. [__relay.ino__:](https://github.com/dion-ricky/wireless-switch/blob/master/sketch/relay.ino) This file is a sketch for the NodeMCU ESP12e Board. This sketch configure WiFi SSID to connect to with the given password. The led on pin 16 will blink if NodeMCU ESP12e is not connected to the WiFi yet.
