@@ -3,9 +3,9 @@
 A wireless switch based on NodeMCU ESP8266 12E WiFi Development Board with a simple user interface programmed in PHP and using MySql for database storage.
 
 ## Table of Contents
-1. [How it works?](https://github.com/dion-ricky/wireless-switch#how-it-works)  
-1.1 [Server side](https://github.com/dion-ricky/wireless-switch#1-server-side)  
-1.2 [NodeMCU ESP12e WiFi Development Board](https://github.com/dion-ricky/wireless-switch#2-nodemcu-esp12e-wifi-development-board)  
+1. [How it works?](#how-it-works)  
+1.1 [Server side](#1-server-side)  
+1.2 [NodeMCU ESP12e WiFi Development Board](#2-nodemcu-esp12e-wifi-development-board)  
 
 ## How it works?
 ### 1. Server side
