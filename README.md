@@ -20,7 +20,7 @@ The files are:
 7. [__buka_file.php__:](https://github.com/dion-ricky/wireless-switch/blob/master/server/buka_file.php) This file will include php file according to the `?page` request, if empty [main.php](https://github.com/dion-ricky/wireless-switch/blob/master/server/main.php) will be included.
 8. [__logout.php__:](https://github.com/dion-ricky/wireless-switch/blob/master/server/logout.php) This is also called session destroyer, whis file when icluded will destroy the session started by `index.php`.
 9. [__404.php__:](https://github.com/dion-ricky/wireless-switch/blob/master/server/404.php) This file will be included if `?page` contains unknown request.
-10. [__script\connection_handler.bat__:](https://github.com/dion-ricky/wireless-switch/blob/master/server/script/connection_handler.bat) This file will send 1 packet to the IP of the device and will return `errorlevel` according to the ping response. If 1 packet is received back, it will return `errorlevel` equal to 1, if no packet is received, then the `errorlevel` is set to 0.
+10. [__script\connection_handler.bat__:](https://github.com/dion-ricky/wireless-switch/blob/master/server/script/connection_handler.bat) This file will send 1 packet to the IP of the device and will return `errorlevel` according to the ping response. If 1 packet is received back, it will return `errorlevel = 1`, if no packet is received, then it will return `errorlevel = 0`.
 
 ### 2. NodeMCU ESP12e WiFi Development Board
 1. [__relay.ino__:](https://github.com/dion-ricky/wireless-switch/blob/master/sketch/relay.ino) This file is a sketch for the NodeMCU ESP12e Board. This sketch configure WiFi SSID to connect to with the given password. The led on pin 16 will blink if NodeMCU ESP12e is not connected to the WiFi yet.
