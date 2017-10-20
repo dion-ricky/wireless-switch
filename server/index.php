@@ -40,6 +40,88 @@ function led(pin,mode) {
 	gethttp.open("GET","http://"+ip+"/"+pin+"="+mode,true);
 	gethttp.send();
 }
+</script>
+<style>
+html,body {
+	font-family:"Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, sans-serif;
+}
+</style>
+</head>
+
+<body onLoad="active()">
+<div class="topnav">
+<button class="topnav-btn" onClick="sidebar_open()"><i class="fa fa-bars fa-fw"></i>&nbsp; Menu</button>
+<span class="topnav-item">Wireless Switch UI</span>
+</div>
+<nav class="sidebar animateLeft" id="mySidebar"><br>
+<div id="container" class="container">
+<div class="col s4">
+<?php
+if(isset($_SESSION['USERNAME'])) {
+	echo "<img src='' class='avatar' id='avatar'>";
+} else {
+	echo "<img src='' class='avatar' id='avatar'>";
+}?>
+</div>
+<div class="col s8 bar">
+<span>Welcome, <strong><?php echo $username; ?></strong><br><i>Connected at <?php echo $_SERVER['HTTP_HOST'] ?></i><br><i>Server IP <?php echo $ip[0]; ?></i></span><br><br>
+<span>&nbsp;</span>
+</div>
+</div>
+<hr>
+<div class="container">
+<h5>Dashboard</h5>
+</div>
+<div class="bar-block">
+<?php if(isset($_SESSION['ADMIN'])) {?>
+    <a class="bar-item btnClose" onclick="sidebar_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>&nbsp; Close Menu</a>
+    <a href="?page" class="bar-item btn"><i class="fa fa-home fa-fw"></i>&nbsp; Overview</a>
+    <a href="?page=Logout" class="bar-item logout"><i class="fa fa-sign-out fa-fw"></i>&nbsp; Logout</a><br><br>
+<?php
+}
+else {
+?>
+    <a class="bar-item btnClose" onclick="sidebar_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>&nbsp; Close Menu</a>
+    <a href="?page=Login" class="bar-item btn"><i class="fa fa-sign-in fa-fw"></i>&nbsp; Login</a><br><br>
+<?php } ?>
+</div>
+</nav>
+
+<script>
+
+var avatar;
+
+if(localStorage.getItem('avatar')) {
+	avatar = localStorage.getItem('avatar');
+} else {
+	avatar = '<?php echo $avatar; ?>';
+	localStorage.setItem('avatar',avatar);
+}
+document.getElementById('avatar').src = 'data:image/png;base64,'+avatar;
+
+// Sidebar Active Styling
+var mySidebar = document.getElementById("mySidebar");
+
+// Get the DIV with overlay effect
+var overlayBg = document.getElementById("myOverlay");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function sidebar_open() {
+    if (mySidebar.style.display === 'block') {
+        mySidebar.style.display = 'none';
+        overlayBg.style.display = "none";
+    } else {
+        mySidebar.style.display = 'block';
+        overlayBg.style.display = "block";
+    }
+}
+
+// Close the sidebar with the close button
+function sidebar_close() {
+    mySidebar.style.display = "none";
+    overlayBg.style.display = "none";
+}
+
 function active() {
 	var href = document.getElementsByTagName("a");
 	var proto = window.location.protocol;
@@ -70,85 +152,10 @@ function active() {
 		}
 	}
 	}
-
-var avatar;
-
-if(localStorage.getItem('avatar')) {
-	avatar = localStorage.getItem('avatar');
-} else {
-	avatar = '<?php echo $avatar; ?>';
-	localStorage.setItem('avatar',avatar);
-}
-document.getElementById('avatar').src = 'data:image/png;base64,'+avatar;
-</script>
-<style>
-html,body {
-	font-family:"Gill Sans", "Gill Sans MT", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, sans-serif;
-}
-</style>
-
-	</head>
-
-<body onLoad="active()">
-<div class="topnav">
-<button class="topnav-btn" onClick="sidebar_open()"><i class="fa fa-bars fa-fw"></i>&nbsp; Menu</button>
-<span class="topnav-item">Wireless Switch UI</span>
-</div>
-<nav class="sidebar animateLeft" id="mySidebar"><br>
-<div id="container" class="container">
-<div class="col s4">
-<?php
-if(isset($_SESSION['USERNAME'])) {
-	echo "<img src='' class='avatar' id='avatar'>";
-} else {
-	echo "<img src='' class='avatar' id='avatar'>";
-}?>
-</div>
-<div class="col s8 bar">
-<span>Welcome, <strong><?php echo $username; ?></strong><br><i>Connected at <?php echo $_SERVER['HTTP_HOST'] ?></i><br><i>Server IP <?php echo $ip[0]; ?></i></span><br><br>
-<span>&nbsp;</span>
-</div>
-</div>
-<hr>
-<div class="container">
-<h5>Dashboard</h5>
-</div>
-<div class="bar-block">
-<?php if(isset($_SESSION['ADMIN'])) {?>
-    <a class="bar-item btnClose" onclick="sidebar()" title="close menu"><i class="fa fa-remove fa-fw"></i>&nbsp; Close Menu</a>
-    <a href="?page" class="bar-item btn"><i class="fa fa-home fa-fw"></i>&nbsp; Overview</a>
-    <a href="?page=Logout" class="bar-item logout"><i class="fa fa-sign-out fa-fw"></i>&nbsp; Logout</a><br><br>
-<?php
-}
-else {
-?>
-    <a class="bar-item btnClose" onclick="sidebar()" title="close menu"><i class="fa fa-remove fa-fw"></i>&nbsp; Close Menu</a>
-    <a href="?page=Login" class="bar-item btn"><i class="fa fa-sign-in fa-fw"></i>&nbsp; Login</a><br><br>
-<?php } ?>
-</div>
-</nav>
-<div class="overlay" id="myOverlay" style="cursor:pointer" onClick="sidebar()" title="close side menu"></div>
-
-<script>
-// Sidebar Active Styling
-var mySidebar = document.getElementById("mySidebar");
-
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
-
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function sidebar() {
-    if (mySidebar.style.display === 'block') {
-        mySidebar.style.display = 'none';
-        overlayBg.style.display = "none";
-    } else {
-        mySidebar.style.display = 'block';
-        overlayBg.style.display = "block";
-    }
-}
 }
 </script>
 
+<div class="overlay" id="myOverlay" style="cursor:pointer" onClick="sidebar_close()" title="close side menu"></div>
 <div class="main">
 <?php include 'buka_file.php'; ?>
 </div>
