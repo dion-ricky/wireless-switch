@@ -2,76 +2,99 @@
 #include <SPI.h>
 #include <ESP8266HTTPClient.h>
 
-const char* ssid = "Wireless Switch"; // WiFi ssid to connect to
-const char* password = "88192010"; // WiFi Password
+const char* ssid = "Wireless Switch";
+const char* password = "88192010";
 
-int connInd = 16; // LED to blink when WiFi is not connected yet
+int err = 12;
+int connInd = 16;
 
-WiFiServer server(80); // Define server in port 80
+WiFiServer server(80);
 
 void setup() {
-  pinMode(connInd, OUTPUT); // Set pin 16 as OUTPUT
-  digitalWrite(connInd, HIGH); // Set pin 16 to HIGH (the led is off)
+  pinMode(err, OUTPUT);
+  pinMode(connInd, OUTPUT);
+  digitalWrite(connInd, HIGH);
+  digitalWrite(err, HIGH);
   
-  WiFi.begin(ssid, password); // Connecting to WiFi with the information given above
+  WiFi.begin(ssid, password);
    
-  while (WiFi.status() != WL_CONNECTED) { // If not connected yet
-    digitalWrite(connInd, LOW); // Turn on led on pin 16
-    delay(500); // Add delay for half seconds
-    digitalWrite(connInd, HIGH); // Then turn off the led on 16
-    delay(500); // Delay again for half seconds
+  while (WiFi.status() != WL_CONNECTED) {
+    switch(WiFi.status()){
+      case WL_CONNECT_FAILED:
+        digitalWrite(err, LOW);
+        delay(2000);
+        break;
+      case WL_NO_SSID_AVAIL:
+        digitalWrite(err, LOW);
+        delay(500);
+        digitalWrite(err, HIGH);
+        delay(500);
+        break;
+      case WL_IDLE_STATUS:
+        digitalWrite(connInd, LOW);
+        delay(1000);
+        break;
+      case WL_DISCONNECTED:
+        digitalWrite(connInd, LOW);
+        delay(1000);
+        digitalWrite(connInd, HIGH);
+        delay(1000);
+        break;
+    }
   }
+  server.begin();
   
-  // If the program reaches here that means we are already connected to the WiFi
-  server.begin(); // Begin the server on port 80
-  
-  delay(10); // Unnecessary delay
+  delay(10);
 
-  HTTPClient http; // Define HTTPClient object named http
+  HTTPClient http;
   
-  String s = "http://192.168.173.1/servip.php?locip="; // Please read the README.md to understand what and why do I need this line
+  String s = "http://w-switch.herokuapp.com/servip.php?ip=";
   s += WiFi.localIP().toString();
+  http.begin(s);
   
-  http.begin(s); // Initialize http request
+  int httpCode = http.GET();
   
-  int httpCode = http.GET(); // Send http request to 192.168.173.1
-  
-  http.end(); // Close http request
+  http.end();
+
+  while(httpCode != 200){
+    digitalWrite(err, LOW);
+    http.begin(s);
+    httpCode = http.GET();
+    http.end();
+    delay(500);
+    digitalWrite(err, HIGH);
+    delay(500);
+  }
 }
  
 void loop() {
-  WiFiClient client = server.available(); // Define client
+  WiFiClient client = server.available();
   if (!client) {
-    return; // If no client is connected, then return back to the loop, and check for client again, and so on
+    delay(10);
+    return;
   }
+  String request = client.readStringUntil('\r');
+  String led = "";
+  int ledId;
   
-  String request = client.readStringUntil('\r'); // Read the client request
-  String led = ""; // Initialize a String called led
-  int ledPin; // Initialize an integer led pin
-  
-  if(request.indexOf("ON")!=-1) { // If the request is ON then do
-    // The request string -> GET /ledpin=ON HTTP/1.1
-    // So we need to fetch the ledpin to know which pin should be turned on
+  if(request.indexOf("ON")!=-1) {
     led = request.substring(request.indexOf("/")+1,request.length()-12);
-    // So we just substring it by the index of '/' plus one until the length of the request minus twelve
-    // Now we get the led pin requested by the user to be turned on
-    // But the led variable is string so we need to convert to integer first before using it
-  } else if(request.indexOf("OFF")!=-1) { // If the request is OFF then do
-    // Same as before, we just need to get the pin
+  } else if(request.indexOf("OFF")!=-1) {
     led = request.substring(request.indexOf("/")+1,request.length()-13);
-  } else { // Else if request is none above
-    led = "0"; // Set led variable to '0'
+  } else {
+    led = "0";
   }
-  ledPin = led.toInt(); // Converts string to integer
-  if(ledPin == 0) { // Therefore if the ledPin is equal to zero
-    return; // Return back to the loop
+  ledId = led.toInt();
+  if(ledId == 0) {
+    return;
   }
-  pinMode(ledPin, OUTPUT); // Set desired pin as OUTPUT
+  pinMode(ledId, OUTPUT);
   
-  if (request.indexOf("ON") != -1) { // If request contains ON
-    digitalWrite(ledPin, LOW); // Lights up the LED
+  int value = LOW;
+  if (request.indexOf("ON") != -1) {
+    digitalWrite(ledId, LOW);
   } 
-  if (request.indexOf("OFF") != -1){ // Else if request contains OFF
-    digitalWrite(ledPin, HIGH); // Turns off the LED
+  if (request.indexOf("OFF") != -1){
+    digitalWrite(ledId, HIGH);
   }
 }
